@@ -5,6 +5,7 @@ import {
 import { useRouter } from 'expo-router'
 import { supabase } from '../../lib/supabase'
 import { COLORS } from '../../lib/constants'
+import { MOCK_MODE, MOCK_SUPPLIER_PROFILE, MOCK_ACTIVE_OFFER, MOCK_RECENT_CLOSED_OFFERS } from '../../lib/mockData'
 
 export default function SupplierDashboard() {
   const router = useRouter()
@@ -18,6 +19,13 @@ export default function SupplierDashboard() {
   }, [])
 
   async function loadDashboard() {
+    if (MOCK_MODE) {
+      setProfile(MOCK_SUPPLIER_PROFILE)
+      setActiveOffer(MOCK_ACTIVE_OFFER)
+      setRecentOffers(MOCK_RECENT_CLOSED_OFFERS)
+      setLoading(false)
+      return
+    }
     const { data: { session } } = await supabase.auth.getSession()
     if (!session) return
 
@@ -50,13 +58,28 @@ export default function SupplierDashboard() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View>
-          <Text style={styles.logo}>dealspot</Text>
-          <Text style={styles.businessName}>{profile?.business_name}</Text>
+        <View style={styles.headerTop}>
+          <View style={styles.headerBrand}>
+            <View style={styles.mascot}>
+              <Text style={styles.mascotEmoji}>⚡</Text>
+            </View>
+            <View>
+              <Text style={styles.logo}>ZOLT</Text>
+              <Text style={styles.businessName}>{profile?.business_name}</Text>
+            </View>
+          </View>
+          <View style={styles.headerActions}>
+            <TouchableOpacity
+              style={styles.newOfferBtn}
+              onPress={() => router.push('/(supplier)/offer-builder')}
+            >
+              <Text style={styles.newOfferBtnText}>+ ZOLT ME</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push('/(supplier)/settings')}>
+              <Text style={styles.settingsIcon}>⚙</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity onPress={() => router.push('/(supplier)/settings')}>
-          <Text style={styles.settingsIcon}>⚙</Text>
-        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>
@@ -76,14 +99,14 @@ export default function SupplierDashboard() {
             </Text>
           </TouchableOpacity>
         ) : (
-          // Market me CTA
+          // Zolt me CTA
           <TouchableOpacity
             style={styles.marketMeBtn}
             onPress={() => router.push('/(supplier)/offer-builder')}
           >
-            <Text style={styles.marketMeEmoji}>📣</Text>
-            <Text style={styles.marketMeTitle}>Market me</Text>
-            <Text style={styles.marketMeSubtitle}>Create an offer and go live in under 60 seconds</Text>
+            <Text style={styles.marketMeEmoji}>⚡</Text>
+            <Text style={styles.marketMeTitle}>ZOLT ME</Text>
+            <Text style={styles.marketMeSubtitle}>Go live with a deal in under 60 seconds</Text>
           </TouchableOpacity>
         )}
 
@@ -125,37 +148,51 @@ export default function SupplierDashboard() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
-  loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  loading: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.background },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 16,
-    backgroundColor: COLORS.white,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.navy,
   },
-  logo: { fontSize: 14, fontWeight: '700', color: COLORS.primary, letterSpacing: 1, textTransform: 'uppercase' },
-  businessName: { fontSize: 20, fontWeight: '800', color: COLORS.text },
-  settingsIcon: { fontSize: 22, color: COLORS.textSecondary },
+  headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  headerBrand: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  mascot: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: COLORS.red,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mascotEmoji: { fontSize: 20 },
+  logo: { fontSize: 22, fontWeight: '900', color: COLORS.white, letterSpacing: 3 },
+  businessName: { fontSize: 13, fontWeight: '500', color: 'rgba(255,255,255,0.65)', marginTop: 1 },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  newOfferBtn: {
+    backgroundColor: COLORS.red,
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+  },
+  newOfferBtnText: { color: COLORS.white, fontSize: 13, fontWeight: '700' },
+  settingsIcon: { fontSize: 22, color: 'rgba(255,255,255,0.6)' },
   scroll: { padding: 20, gap: 16, paddingBottom: 40 },
   marketMeBtn: {
     backgroundColor: COLORS.primary,
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 28,
     alignItems: 'center',
     gap: 8,
   },
-  marketMeEmoji: { fontSize: 40 },
-  marketMeTitle: { fontSize: 24, fontWeight: '800', color: COLORS.white },
+  marketMeEmoji: { fontSize: 44 },
+  marketMeTitle: { fontSize: 26, fontWeight: '800', color: COLORS.white },
   marketMeSubtitle: { fontSize: 14, color: 'rgba(255,255,255,0.8)', textAlign: 'center' },
   liveCard: {
     backgroundColor: COLORS.primaryLight,
     borderRadius: 16,
     padding: 20,
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderColor: COLORS.primary,
     gap: 8,
   },
@@ -166,7 +203,7 @@ const styles = StyleSheet.create({
   liveOfferMeta: { fontSize: 13, color: COLORS.textSecondary },
   locationCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     borderWidth: 1,
     borderColor: COLORS.border,
@@ -174,16 +211,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  locationLabel: { fontSize: 14, fontWeight: '600', color: COLORS.text },
+  locationLabel: { fontSize: 14, fontWeight: '700', color: COLORS.text },
   locationValue: { flex: 1, fontSize: 14, color: COLORS.textSecondary },
-  locationChange: { fontSize: 13, color: COLORS.primary },
+  locationChange: { fontSize: 13, color: COLORS.primary, fontWeight: '600' },
   recentSection: { gap: 10 },
   recentHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text },
-  seeAll: { fontSize: 13, color: COLORS.primary },
+  sectionTitle: { fontSize: 15, fontWeight: '700', color: COLORS.text },
+  seeAll: { fontSize: 13, color: COLORS.primary, fontWeight: '600' },
   recentCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 10,
+    borderRadius: 14,
     padding: 14,
     borderWidth: 1,
     borderColor: COLORS.border,

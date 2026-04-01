@@ -49,8 +49,11 @@ export default function Signup() {
     >
       <ScrollView contentContainerStyle={styles.inner} keyboardShouldPersistTaps="handled">
         <View style={styles.header}>
-          <Text style={styles.logo}>dealspot</Text>
-          <Text style={styles.tagline}>Create your account</Text>
+          <View style={styles.mascot}>
+            <Text style={styles.mascotEmoji}>⚡</Text>
+          </View>
+          <Text style={styles.logo}>ZOLT</Text>
+          <Text style={styles.tagline}>CREATE YOUR ACCOUNT</Text>
         </View>
 
         {/* Role selector */}
@@ -124,22 +127,33 @@ export default function Signup() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.white },
-  inner: { flex: 1, justifyContent: 'center', padding: 28 },
-  header: { alignItems: 'center', marginBottom: 32 },
-  logo: { fontSize: 40, fontWeight: '800', color: COLORS.primary, letterSpacing: -1 },
-  tagline: { fontSize: 15, color: COLORS.textSecondary, marginTop: 6 },
+  container: { flex: 1, backgroundColor: COLORS.cream },
+  inner: { flexGrow: 1, justifyContent: 'center', padding: 28 },
+  header: { alignItems: 'center', marginBottom: 28, gap: 6 },
+  mascot: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: COLORS.navy,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  mascotEmoji: { fontSize: 32 },
+  logo: { fontSize: 48, fontWeight: '900', color: COLORS.navy, letterSpacing: 6 },
+  tagline: { fontSize: 13, fontWeight: '600', color: COLORS.textSecondary, letterSpacing: 1 },
   roleRow: { flexDirection: 'row', gap: 12, marginBottom: 24 },
   roleBtn: {
     flex: 1,
     borderWidth: 1.5,
     borderColor: COLORS.border,
-    borderRadius: 12,
+    borderRadius: 16,
     padding: 16,
     alignItems: 'center',
+    backgroundColor: COLORS.white,
   },
   roleBtnActive: { borderColor: COLORS.primary, backgroundColor: COLORS.primaryLight },
-  roleBtnText: { fontSize: 15, fontWeight: '600', color: COLORS.text },
+  roleBtnText: { fontSize: 15, fontWeight: '700', color: COLORS.text },
   roleBtnTextActive: { color: COLORS.primary },
   roleSubText: { fontSize: 12, color: COLORS.textSecondary, marginTop: 2 },
   form: { gap: 14 },
@@ -147,7 +161,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: COLORS.border,
     borderRadius: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 14,
     paddingVertical: 14,
     fontSize: 16,
     color: COLORS.text,
@@ -155,7 +169,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: COLORS.primary,
-    borderRadius: 12,
+    borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 4,
@@ -163,5 +177,5 @@ const styles = StyleSheet.create({
   buttonDisabled: { opacity: 0.6 },
   buttonText: { color: COLORS.white, fontSize: 16, fontWeight: '700' },
   link: { alignItems: 'center', marginTop: 8 },
-  linkText: { color: COLORS.primary, fontSize: 15 },
+  linkText: { color: COLORS.primary, fontSize: 14, fontWeight: '600' },
 })

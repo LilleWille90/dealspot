@@ -1,34 +1,34 @@
 {
   "expo": {
-    "name": "Dealspot",
-    "slug": "dealspot",
+    "name": "Zolt",
+    "slug": "zolt",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "scheme": "dealspot",
+    "scheme": "zolt",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#00a878"
+      "backgroundColor": "#D94F2B"
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.dealspot.app",
+      "bundleIdentifier": "com.zolt.app",
       "infoPlist": {
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Dealspot needs your location to find deals nearby when Deal Mode is active.",
-        "NSLocationWhenInUseUsageDescription": "Dealspot needs your location to find deals nearby.",
-        "NSLocationAlwaysUsageDescription": "Dealspot needs background location access to alert you to deals nearby while Deal Mode is on.",
-        "NSCameraUsageDescription": "Dealspot uses the camera to scan QR codes when redeeming deals."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Zolt needs your location to find deals nearby when Zolt Mode is active.",
+        "NSLocationWhenInUseUsageDescription": "Zolt needs your location to find deals nearby.",
+        "NSLocationAlwaysUsageDescription": "Zolt needs background location access to alert you to deals nearby while Zolt Mode is on.",
+        "NSCameraUsageDescription": "Zolt uses the camera to scan QR codes when redeeming deals."
       },
       "backgroundModes": ["location", "fetch", "remote-notification"]
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#00a878"
+        "backgroundColor": "#D94F2B"
       },
-      "package": "com.dealspot.app",
+      "package": "com.zolt.app",
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
@@ -36,8 +36,7 @@
         "CAMERA",
         "RECEIVE_BOOT_COMPLETED",
         "VIBRATE"
-      ],
-      "googleServicesFile": "./google-services.json"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -48,9 +47,9 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Dealspot needs your location to find deals nearby when Deal Mode is active.",
-          "locationAlwaysPermission": "Dealspot needs background location to alert you to deals.",
-          "locationWhenInUsePermission": "Dealspot needs your location to find deals nearby.",
+          "locationAlwaysAndWhenInUsePermission": "Zolt needs your location to find deals nearby when Zolt Mode is active.",
+          "locationAlwaysPermission": "Zolt needs background location to alert you to deals.",
+          "locationWhenInUsePermission": "Zolt needs your location to find deals nearby.",
           "isIosBackgroundLocationEnabled": true,
           "isAndroidBackgroundLocationEnabled": true
         }
@@ -59,14 +58,14 @@
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#00a878",
+          "color": "#D94F2B",
           "sounds": []
         }
       ],
       [
         "expo-camera",
         {
-          "cameraPermission": "Dealspot uses the camera to scan QR codes."
+          "cameraPermission": "Zolt uses the camera to scan QR codes."
         }
       ]
     ],

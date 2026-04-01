@@ -1,11 +1,17 @@
 import { useEffect, useState } from 'react'
 import { Stack } from 'expo-router'
 import { supabase } from '../lib/supabase'
+import { MOCK_MODE, MOCK_USER_ID } from '../lib/mockData'
 
 export default function RootLayout() {
   const [session, setSession] = useState(undefined)
 
   useEffect(() => {
+    if (MOCK_MODE) {
+      setSession({ user: { id: MOCK_USER_ID } })
+      return
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session)
     })

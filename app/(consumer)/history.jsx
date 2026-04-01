@@ -5,6 +5,7 @@ import {
 import { useRouter } from 'expo-router'
 import { supabase } from '../../lib/supabase'
 import { COLORS } from '../../lib/constants'
+import { MOCK_MODE, MOCK_HISTORY } from '../../lib/mockData'
 
 export default function DealHistory() {
   const router = useRouter()
@@ -16,6 +17,11 @@ export default function DealHistory() {
   }, [])
 
   async function fetchHistory() {
+    if (MOCK_MODE) {
+      setRedemptions(MOCK_HISTORY)
+      setLoading(false)
+      return
+    }
     const { data: { session } } = await supabase.auth.getSession()
     const { data } = await supabase
       .from('redemptions')

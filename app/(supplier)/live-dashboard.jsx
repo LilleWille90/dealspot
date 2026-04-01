@@ -5,6 +5,7 @@ import {
 import { useRouter, useLocalSearchParams } from 'expo-router'
 import { supabase } from '../../lib/supabase'
 import { COLORS, STALL_THRESHOLD_CLAIMED, STALL_THRESHOLD_ELAPSED } from '../../lib/constants'
+import { MOCK_MODE, MOCK_ACTIVE_OFFER, MOCK_LIVE_REDEMPTIONS } from '../../lib/mockData'
 
 export default function LiveDashboard() {
   const router = useRouter()
@@ -18,6 +19,14 @@ export default function LiveDashboard() {
   const [ending, setEnding] = useState(false)
 
   useEffect(() => {
+    if (MOCK_MODE) {
+      setOffer(MOCK_ACTIVE_OFFER)
+      setRedemptions(MOCK_LIVE_REDEMPTIONS)
+      setReachableCount(47)
+      setLoading(false)
+      return
+    }
+
     fetchOffer()
 
     // Real-time subscription
@@ -242,14 +251,14 @@ const styles = StyleSheet.create({
   endText: { color: COLORS.danger, fontSize: 15, fontWeight: '600' },
   scroll: { padding: 20, gap: 16, paddingBottom: 100 },
   boostPrompt: {
-    backgroundColor: COLORS.amberLight,
+    backgroundColor: COLORS.redLight,
     borderWidth: 1.5,
-    borderColor: COLORS.amber,
+    borderColor: COLORS.red,
     borderRadius: 12,
     padding: 16,
     gap: 4,
   },
-  boostPromptTitle: { fontSize: 15, fontWeight: '700', color: COLORS.amber },
+  boostPromptTitle: { fontSize: 15, fontWeight: '700', color: COLORS.red },
   boostPromptText: { fontSize: 14, color: COLORS.text },
   offerText: { fontSize: 20, fontWeight: '700', color: COLORS.text },
   statsRow: { flexDirection: 'row', gap: 10 },
@@ -268,7 +277,7 @@ const styles = StyleSheet.create({
   progressSection: { gap: 6 },
   progressBg: { height: 8, backgroundColor: COLORS.border, borderRadius: 4 },
   progressBar: { height: 8, backgroundColor: COLORS.primary, borderRadius: 4 },
-  progressBarAmber: { backgroundColor: COLORS.amber },
+  progressBarAmber: { backgroundColor: COLORS.red },
   timeLeft: { fontSize: 13, color: COLORS.textSecondary, textAlign: 'right' },
   sectionTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text },
   emptyLog: { fontSize: 14, color: COLORS.textSecondary },
@@ -306,7 +315,7 @@ const styles = StyleSheet.create({
   },
   scanBtnText: { color: COLORS.white, fontSize: 15, fontWeight: '700' },
   boostBtn: {
-    backgroundColor: COLORS.amber,
+    backgroundColor: COLORS.red,
     borderRadius: 12,
     paddingVertical: 14,
     paddingHorizontal: 20,

@@ -101,7 +101,7 @@ export default function RedeemScreen() {
 
       <View style={styles.qrContainer}>
         <QRCode
-          value={`dealspot://redeem/${id}/${redemption?.qr_token}`}
+          value={`zolt://redeem/${id}/${redemption?.qr_token}`}
           size={220}
           color={COLORS.text}
           backgroundColor={COLORS.white}
@@ -165,9 +165,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
-  timerUrgent: { backgroundColor: COLORS.amberLight },
+  timerUrgent: { backgroundColor: COLORS.redLight },
   timerText: { fontSize: 20, fontWeight: '700', color: COLORS.primary },
-  timerTextUrgent: { color: COLORS.amber },
+  timerTextUrgent: { color: COLORS.red },
   cancelBtn: { paddingVertical: 8 },
   cancelText: { color: COLORS.textSecondary, fontSize: 14, textDecorationLine: 'underline' },
 })

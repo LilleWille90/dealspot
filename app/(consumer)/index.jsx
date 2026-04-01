@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router'
 import * as Location from 'expo-location'
 import { supabase } from '../../lib/supabase'
 import { COLORS, SESSION_LENGTHS, DISCOVER_RADII } from '../../lib/constants'
+import { MOCK_MODE, MOCK_NEARBY_OFFERS, MOCK_USER_ID } from '../../lib/mockData'
 
 export default function ConsumerHome() {
   const router = useRouter()
@@ -18,6 +19,10 @@ export default function ConsumerHome() {
   const [session, setSession] = useState(null)
 
   useEffect(() => {
+    if (MOCK_MODE) {
+      setSession({ user: { id: MOCK_USER_ID } })
+      return
+    }
     supabase.auth.getSession().then(({ data: { session } }) => setSession(session))
   }, [])
 
@@ -28,7 +33,7 @@ export default function ConsumerHome() {
       if (status !== 'granted') {
         Alert.alert(
           'Location needed',
-          'Dealspot needs your location to find deals nearby. Please enable location access in Settings.'
+          'Zolt needs your location to find deals nearby. Please enable location access in Settings.'
         )
         return
       }
@@ -53,6 +58,11 @@ export default function ConsumerHome() {
 
   async function startDealMode() {
     setLoading(true)
+    if (MOCK_MODE) {
+      setNearbyOffers(MOCK_NEARBY_OFFERS)
+      setLoading(false)
+      return
+    }
     try {
       const location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High })
       const expiresAt = selectedSession.value
@@ -105,7 +115,12 @@ export default function ConsumerHome() {
     <View style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.logo}>dealspot</Text>
+        <View style={styles.headerBrand}>
+          <View style={styles.mascot}>
+            <Text style={styles.mascotEmoji}>⚡</Text>
+          </View>
+          <Text style={styles.logo}>ZOLT</Text>
+        </View>
         <TouchableOpacity onPress={() => router.push('/(consumer)/settings')}>
           <Text style={styles.settingsIcon}>⚙</Text>
         </TouchableOpacity>
@@ -117,7 +132,7 @@ export default function ConsumerHome() {
           <View style={styles.dealModeRow}>
             <View>
               <Text style={[styles.dealModeTitle, dealMode && styles.dealModeTitleActive]}>
-                Deal Mode
+                ZOLT MODE
               </Text>
               <Text style={[styles.dealModeSubtitle, dealMode && styles.dealModeSubtitleActive]}>
                 {dealMode
@@ -221,28 +236,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 60,
     paddingBottom: 16,
-    backgroundColor: COLORS.white,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    backgroundColor: COLORS.navy,
   },
-  logo: { fontSize: 24, fontWeight: '800', color: COLORS.primary, letterSpacing: -0.5 },
-  settingsIcon: { fontSize: 22, color: COLORS.textSecondary },
+  headerBrand: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  mascot: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: COLORS.red,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  mascotEmoji: { fontSize: 18 },
+  logo: { fontSize: 24, fontWeight: '900', color: COLORS.white, letterSpacing: 3 },
+  settingsIcon: { fontSize: 22, color: 'rgba(255,255,255,0.6)' },
   scroll: { flex: 1 },
   scrollContent: { padding: 20, gap: 20, paddingBottom: 40 },
   dealModeCard: {
     backgroundColor: COLORS.white,
     borderRadius: 16,
     padding: 20,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: COLORS.border,
   },
   dealModeCardActive: { borderColor: COLORS.primary, backgroundColor: COLORS.primaryLight },
   dealModeRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  dealModeTitle: { fontSize: 20, fontWeight: '700', color: COLORS.text },
+  dealModeTitle: { fontSize: 18, fontWeight: '800', color: COLORS.text },
   dealModeTitleActive: { color: COLORS.primary },
   dealModeSubtitle: { fontSize: 13, color: COLORS.textSecondary, marginTop: 2 },
   dealModeSubtitleActive: { color: COLORS.primaryDark },
-  pickerLabel: { fontSize: 12, fontWeight: '600', color: COLORS.textSecondary, marginBottom: 8, marginTop: 4 },
+  pickerLabel: { fontSize: 11, fontWeight: '700', color: COLORS.textSecondary, marginBottom: 8, marginTop: 4 },
   chipRow: { flexDirection: 'row', marginBottom: 4 },
   chip: {
     borderWidth: 1.5,
@@ -257,20 +280,20 @@ const styles = StyleSheet.create({
   chipText: { fontSize: 13, color: COLORS.text },
   chipTextActive: { color: COLORS.primary, fontWeight: '600' },
   offersSection: { gap: 12 },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: COLORS.text },
+  sectionTitle: { fontSize: 15, fontWeight: '700', color: COLORS.text },
   offerCard: {
     backgroundColor: COLORS.white,
-    borderRadius: 12,
+    borderRadius: 14,
     padding: 16,
     borderWidth: 1,
     borderColor: COLORS.border,
     gap: 6,
   },
-  offerText: { fontSize: 15, fontWeight: '600', color: COLORS.text },
+  offerText: { fontSize: 15, fontWeight: '700', color: COLORS.text },
   offerMeta: { fontSize: 13, color: COLORS.textSecondary },
   progressBg: { height: 4, backgroundColor: COLORS.border, borderRadius: 2 },
   progressBar: { height: 4, backgroundColor: COLORS.primary, borderRadius: 2 },
-  progressBarAmber: { backgroundColor: COLORS.amber },
+  progressBarAmber: { backgroundColor: COLORS.red },
   historyLink: { alignItems: 'center', paddingVertical: 8 },
-  historyLinkText: { color: COLORS.primary, fontSize: 14 },
+  historyLinkText: { color: COLORS.primary, fontSize: 14, fontWeight: '600' },
 })

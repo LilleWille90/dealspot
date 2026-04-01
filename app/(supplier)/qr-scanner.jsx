@@ -23,10 +23,10 @@ export default function QRScanner() {
     setScanned(true)
     setProcessing(true)
 
-    // Expected format: dealspot://redeem/{redemption_id}/{qr_token}
-    const match = data.match(/^dealspot:\/\/redeem\/([^/]+)\/(.+)$/)
+    // Expected format: zolt://redeem/{redemption_id}/{qr_token}
+    const match = data.match(/^zolt:\/\/redeem\/([^/]+)\/(.+)$/)
     if (!match) {
-      Alert.alert('Invalid QR code', 'This QR code is not a valid Dealspot redemption code.', [
+      Alert.alert('Invalid QR code', 'This QR code is not a valid Zolt redemption code.', [
         { text: 'Try again', onPress: () => setScanned(false) },
       ])
       setProcessing(false)

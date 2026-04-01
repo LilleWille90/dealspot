@@ -56,7 +56,9 @@ export default function SupplierOnboarding() {
 
       {step === 0 && (
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <Text style={styles.emoji}>🏪</Text>
+          <View style={styles.mascot}>
+            <Text style={styles.mascotEmoji}>⚡</Text>
+          </View>
           <Text style={styles.title}>Tell us about your venue</Text>
           <Text style={styles.body}>This is what customers will see when you go live with a deal.</Text>
 
@@ -103,7 +105,7 @@ export default function SupplierOnboarding() {
             style={styles.button}
             onPress={() => router.push({ pathname: '/(supplier)/location-setup', params: { onboarding: 'true' } })}
           >
-            <Text style={styles.buttonText}>Set location →</Text>
+            <Text style={styles.buttonText}>SET LOCATION →</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.skipLink} onPress={() => setStep(2)}>
             <Text style={styles.skipText}>I'll do this later</Text>
@@ -113,13 +115,13 @@ export default function SupplierOnboarding() {
 
       {step === 2 && (
         <View style={styles.content}>
-          <Text style={styles.emoji}>🚀</Text>
-          <Text style={styles.title}>You're ready!</Text>
+          <Text style={styles.emoji}>⚡</Text>
+          <Text style={styles.title}>You're ready to Zolt!</Text>
           <Text style={styles.body}>
-            When you want customers, tap <Text style={{ fontWeight: '700' }}>Market me</Text> on your dashboard and create an offer. You'll be live in under 60 seconds.
+            When you want customers, tap <Text style={{ fontWeight: '900', color: COLORS.primary }}>Zolt me</Text> on your dashboard and create an offer. You'll be live in under 60 seconds.
           </Text>
           <TouchableOpacity style={styles.button} onPress={() => router.replace('/(supplier)/')}>
-            <Text style={styles.buttonText}>Go to dashboard</Text>
+            <Text style={styles.buttonText}>GO TO DASHBOARD</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -128,45 +130,61 @@ export default function SupplierOnboarding() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.white, paddingTop: 60 },
+  container: { flex: 1, backgroundColor: COLORS.cream, paddingTop: 60 },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginBottom: 40 },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.border },
   dotActive: { backgroundColor: COLORS.primary, width: 24 },
   content: { flex: 1, paddingHorizontal: 28, gap: 16 },
+  mascot: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: COLORS.navy,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: COLORS.primary,
+    marginBottom: 8,
+  },
+  mascotEmoji: { fontSize: 40 },
   emoji: { fontSize: 52, marginBottom: 8 },
-  title: { fontSize: 28, fontWeight: '800', color: COLORS.text },
+  title: { fontSize: 28, fontWeight: '900', color: COLORS.navy },
   body: { fontSize: 15, color: COLORS.textSecondary, lineHeight: 22 },
-  fieldLabel: { fontSize: 13, fontWeight: '600', color: COLORS.textSecondary, textTransform: 'uppercase', letterSpacing: 0.5 },
+  fieldLabel: { fontSize: 11, fontWeight: '900', color: COLORS.navy, textTransform: 'uppercase', letterSpacing: 2, marginTop: 4 },
   input: {
-    borderWidth: 1.5,
-    borderColor: COLORS.border,
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    borderWidth: 2,
+    borderColor: COLORS.navy,
+    borderRadius: 4,
+    paddingHorizontal: 14,
     paddingVertical: 14,
     fontSize: 16,
     color: COLORS.text,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.cream,
+    fontWeight: '600',
   },
   categoryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   categoryChip: {
-    borderWidth: 1.5,
-    borderColor: COLORS.border,
-    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: COLORS.navy,
+    borderRadius: 4,
     paddingHorizontal: 16,
     paddingVertical: 8,
+    backgroundColor: COLORS.white,
   },
   categoryChipActive: { borderColor: COLORS.primary, backgroundColor: COLORS.primaryLight },
-  categoryText: { fontSize: 14, color: COLORS.text },
-  categoryTextActive: { color: COLORS.primary, fontWeight: '600' },
+  categoryText: { fontSize: 14, fontWeight: '700', color: COLORS.navy },
+  categoryTextActive: { color: COLORS.primary, fontWeight: '800' },
   button: {
     backgroundColor: COLORS.primary,
-    borderRadius: 12,
+    borderRadius: 4,
+    borderWidth: 2,
+    borderColor: COLORS.navy,
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: 8,
   },
   buttonDisabled: { opacity: 0.6 },
-  buttonText: { color: COLORS.white, fontSize: 16, fontWeight: '700' },
+  buttonText: { color: COLORS.white, fontSize: 15, fontWeight: '900', letterSpacing: 2 },
   skipLink: { alignItems: 'center', paddingVertical: 8 },
   skipText: { color: COLORS.textSecondary, fontSize: 14 },
 })

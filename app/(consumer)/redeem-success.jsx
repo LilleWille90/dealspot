@@ -10,7 +10,7 @@ export default function RedeemSuccess() {
       <Text style={styles.emoji}>🎉</Text>
       <Text style={styles.title}>Enjoy your deal!</Text>
       <Text style={styles.body}>
-        The staff have confirmed your redemption. Thanks for using Dealspot.
+        The staff have confirmed your redemption. Thanks for using Zolt.
       </Text>
       <TouchableOpacity style={styles.button} onPress={() => router.replace('/(consumer)/')}>
         <Text style={styles.buttonText}>Back to deals</Text>

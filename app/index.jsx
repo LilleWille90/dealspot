@@ -3,11 +3,21 @@ import { View, ActivityIndicator } from 'react-native'
 import { useRouter } from 'expo-router'
 import { supabase } from '../lib/supabase'
 import { COLORS } from '../lib/constants'
+import { MOCK_MODE } from '../lib/mockData'
+
+// In dev (MOCK_MODE), change this to '/(supplier)/' to preview the supplier side
+// Change to '/(supplier)/' to preview the supplier side
+const MOCK_ROUTE = '/(consumer)/'
 
 export default function Index() {
   const router = useRouter()
 
   useEffect(() => {
+    if (MOCK_MODE) {
+      router.replace(MOCK_ROUTE)
+      return
+    }
+
     async function redirect() {
       const { data: { session } } = await supabase.auth.getSession()
 
