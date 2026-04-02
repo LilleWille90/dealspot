@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   View, Text, TouchableOpacity, StyleSheet,
-  ScrollView, Switch, Alert
+  ScrollView, Switch, Alert, Image
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as Location from 'expo-location'
@@ -197,21 +197,28 @@ export default function ConsumerHome() {
                 style={styles.offerCard}
                 onPress={() => router.push(`/(consumer)/offer/${offer.id}`)}
               >
-                <Text style={styles.offerText}>{offer.text}</Text>
-                <Text style={styles.offerMeta}>
-                  {offer.distance_metres < 1000
-                    ? `${offer.distance_metres}m away`
-                    : `${(offer.distance_metres / 1000).toFixed(1)}km away`}
-                  {' · '}
-                  {offer.spots_remaining} spots left
-                </Text>
-                {/* Progress bar */}
-                <View style={styles.progressBg}>
-                  <View style={[
-                    styles.progressBar,
-                    { width: `${(offer.claimed / offer.max_redemptions) * 100}%` },
-                    offer.claimed / offer.max_redemptions >= 0.8 && styles.progressBarAmber,
-                  ]} />
+                <View style={styles.offerCardInner}>
+                  {offer.photo_url && (
+                    <Image source={{ uri: offer.photo_url }} style={styles.offerThumb} />
+                  )}
+                  <View style={styles.offerCardBody}>
+                    <Text style={styles.offerText}>{offer.text}</Text>
+                    <Text style={styles.offerMeta}>
+                      {offer.distance_metres < 1000
+                        ? `${offer.distance_metres}m away`
+                        : `${(offer.distance_metres / 1000).toFixed(1)}km away`}
+                      {' · '}
+                      {offer.spots_remaining} spots left
+                    </Text>
+                    {/* Progress bar */}
+                    <View style={styles.progressBg}>
+                      <View style={[
+                        styles.progressBar,
+                        { width: `${(offer.claimed / offer.max_redemptions) * 100}%` },
+                        offer.claimed / offer.max_redemptions >= 0.8 && styles.progressBarAmber,
+                      ]} />
+                    </View>
+                  </View>
                 </View>
               </TouchableOpacity>
             ))}
@@ -284,9 +291,22 @@ const styles = StyleSheet.create({
   offerCard: {
     backgroundColor: COLORS.white,
     borderRadius: 14,
-    padding: 16,
     borderWidth: 1,
     borderColor: COLORS.border,
+    overflow: 'hidden',
+  },
+  offerCardInner: {
+    flexDirection: 'row',
+  },
+  offerThumb: {
+    width: 88,
+    alignSelf: 'stretch',
+    borderTopLeftRadius: 14,
+    borderBottomLeftRadius: 14,
+  },
+  offerCardBody: {
+    flex: 1,
+    padding: 14,
     gap: 6,
   },
   offerText: { fontSize: 15, fontWeight: '700', color: COLORS.text },
