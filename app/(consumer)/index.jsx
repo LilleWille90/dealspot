@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import {
   View, Text, TouchableOpacity, StyleSheet,
-  ScrollView, Switch, Alert, Image
+  ScrollView, Alert, Image
 } from 'react-native'
 import { useRouter } from 'expo-router'
 import * as Location from 'expo-location'
@@ -28,7 +28,6 @@ export default function ConsumerHome() {
 
   async function toggleDealMode(value) {
     if (value) {
-      // Request location permission
       const { status } = await Location.requestForegroundPermissionsAsync()
       if (status !== 'granted') {
         Alert.alert(
@@ -81,7 +80,7 @@ export default function ConsumerHome() {
 
       await fetchNearbyOffers(location.coords)
     } catch (e) {
-      Alert.alert('Error', 'Could not start Deal Mode. Please try again.')
+      Alert.alert('Error', 'Could not start Zolt Mode. Please try again.')
       setDealMode(false)
     }
     setLoading(false)
@@ -98,7 +97,6 @@ export default function ConsumerHome() {
   }
 
   async function fetchNearbyOffers(coords) {
-    // Calls a Supabase Edge Function that returns active offers within radius
     const { data, error } = await supabase.functions.invoke('nearby-offers', {
       body: {
         lat: coords.latitude,
@@ -126,70 +124,25 @@ export default function ConsumerHome() {
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
-        {/* Deal Mode Card */}
-        <View style={[styles.dealModeCard, dealMode && styles.dealModeCardActive]}>
-          <View style={styles.dealModeRow}>
-            <View>
-              <Text style={[styles.dealModeTitle, dealMode && styles.dealModeTitleActive]}>
-                ZOLT MODE
-              </Text>
-              <Text style={[styles.dealModeSubtitle, dealMode && styles.dealModeSubtitleActive]}>
-                {dealMode
-                  ? `Active · ${selectedSession.label} · ${selectedRadius.label}`
-                  : 'Tap to discover deals near you'}
-              </Text>
-            </View>
-            <Switch
-              value={dealMode}
-              onValueChange={toggleDealMode}
-              trackColor={{ false: COLORS.border, true: COLORS.primary }}
-              thumbColor={COLORS.white}
-            />
+      {dealMode ? (
+        /* ── Active state: offer list ── */
+        <View style={styles.activeContainer}>
+          {/* Status bar */}
+          <View style={styles.activeBar}>
+            <View style={styles.activeDot} />
+            <Text style={styles.activeLabel}>
+              ZOLT MODE · {selectedSession.label} · {selectedRadius.label}
+            </Text>
+            <TouchableOpacity onPress={() => toggleDealMode(false)}>
+              <Text style={styles.stopBtn}>Stop</Text>
+            </TouchableOpacity>
           </View>
 
-          {!dealMode && (
-            <>
-              {/* Session picker */}
-              <Text style={styles.pickerLabel}>How long?</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipRow}>
-                {SESSION_LENGTHS.map(s => (
-                  <TouchableOpacity
-                    key={s.label}
-                    style={[styles.chip, selectedSession.label === s.label && styles.chipActive]}
-                    onPress={() => setSelectedSession(s)}
-                  >
-                    <Text style={[styles.chipText, selectedSession.label === s.label && styles.chipTextActive]}>
-                      {s.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-
-              {/* Radius picker */}
-              <Text style={styles.pickerLabel}>How far?</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipRow}>
-                {DISCOVER_RADII.map(r => (
-                  <TouchableOpacity
-                    key={r.label}
-                    style={[styles.chip, selectedRadius.label === r.label && styles.chipActive]}
-                    onPress={() => setSelectedRadius(r)}
-                  >
-                    <Text style={[styles.chipText, selectedRadius.label === r.label && styles.chipTextActive]}>
-                      {r.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </>
-          )}
-        </View>
-
-        {/* Nearby offers */}
-        {dealMode && (
-          <View style={styles.offersSection}>
+          <ScrollView contentContainerStyle={styles.offersScroll}>
             <Text style={styles.sectionTitle}>
-              {nearbyOffers.length > 0 ? `${nearbyOffers.length} deal${nearbyOffers.length > 1 ? 's' : ''} near you` : 'Looking for deals…'}
+              {nearbyOffers.length > 0
+                ? `${nearbyOffers.length} deal${nearbyOffers.length > 1 ? 's' : ''} near you`
+                : 'Looking for deals…'}
             </Text>
             {nearbyOffers.map(offer => (
               <TouchableOpacity
@@ -210,7 +163,6 @@ export default function ConsumerHome() {
                       {' · '}
                       {offer.spots_remaining} spots left
                     </Text>
-                    {/* Progress bar */}
                     <View style={styles.progressBg}>
                       <View style={[
                         styles.progressBar,
@@ -222,20 +174,82 @@ export default function ConsumerHome() {
                 </View>
               </TouchableOpacity>
             ))}
-          </View>
-        )}
 
-        {/* History link */}
-        <TouchableOpacity style={styles.historyLink} onPress={() => router.push('/(consumer)/history')}>
-          <Text style={styles.historyLinkText}>View past deals →</Text>
-        </TouchableOpacity>
-      </ScrollView>
+            <TouchableOpacity style={styles.historyLink} onPress={() => router.push('/(consumer)/history')}>
+              <Text style={styles.historyLinkText}>View past deals →</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+      ) : (
+        /* ── Idle state: full-screen CTA ── */
+        <View style={styles.idleScreen}>
+          {/* Hero */}
+          <View style={styles.idleHero}>
+            <View style={styles.heroCircle}>
+              <Text style={styles.heroEmoji}>⚡</Text>
+            </View>
+            <Text style={styles.heroTitle}>Hungry right now?</Text>
+            <Text style={styles.heroSub}>
+              Activate Zolt Mode to see instant flash deals from spots near you.
+            </Text>
+          </View>
+
+          {/* Controls */}
+          <View style={styles.idleControls}>
+            <Text style={styles.pickerLabel}>HOW LONG?</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipRow}>
+              {SESSION_LENGTHS.map(s => (
+                <TouchableOpacity
+                  key={s.label}
+                  style={[styles.chip, selectedSession.label === s.label && styles.chipActive]}
+                  onPress={() => setSelectedSession(s)}
+                >
+                  <Text style={[styles.chipText, selectedSession.label === s.label && styles.chipTextActive]}>
+                    {s.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <Text style={[styles.pickerLabel, { marginTop: 16 }]}>HOW FAR?</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipRow}>
+              {DISCOVER_RADII.map(r => (
+                <TouchableOpacity
+                  key={r.label}
+                  style={[styles.chip, selectedRadius.label === r.label && styles.chipActive]}
+                  onPress={() => setSelectedRadius(r)}
+                >
+                  <Text style={[styles.chipText, selectedRadius.label === r.label && styles.chipTextActive]}>
+                    {r.label}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <TouchableOpacity
+              style={[styles.activateBtn, loading && styles.activateBtnDisabled]}
+              onPress={() => toggleDealMode(true)}
+              disabled={loading}
+              activeOpacity={0.85}
+            >
+              <Text style={styles.activateBtnText}>
+                {loading ? 'Finding deals…' : '⚡  ACTIVATE ZOLT MODE'}
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.historyLink} onPress={() => router.push('/(consumer)/history')}>
+              <Text style={styles.historyLinkText}>View past deals →</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
+
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -257,37 +271,80 @@ const styles = StyleSheet.create({
   mascotEmoji: { fontSize: 18 },
   logo: { fontSize: 24, fontWeight: '900', color: COLORS.white, letterSpacing: 3 },
   settingsIcon: { fontSize: 22, color: 'rgba(255,255,255,0.6)' },
-  scroll: { flex: 1 },
-  scrollContent: { padding: 20, gap: 20, paddingBottom: 40 },
-  dealModeCard: {
-    backgroundColor: COLORS.white,
-    borderRadius: 16,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: COLORS.border,
+
+  /* ── Idle ── */
+  idleScreen: {
+    flex: 1,
+    justifyContent: 'space-between',
+    paddingBottom: 40,
   },
-  dealModeCardActive: { borderColor: COLORS.primary, backgroundColor: COLORS.primaryLight },
-  dealModeRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-  dealModeTitle: { fontSize: 18, fontWeight: '800', color: COLORS.text },
-  dealModeTitleActive: { color: COLORS.primary },
-  dealModeSubtitle: { fontSize: 13, color: COLORS.textSecondary, marginTop: 2 },
-  dealModeSubtitleActive: { color: COLORS.primaryDark },
-  pickerLabel: { fontSize: 11, fontWeight: '700', color: COLORS.textSecondary, marginBottom: 8, marginTop: 4 },
-  chipRow: { flexDirection: 'row', marginBottom: 4 },
+  idleHero: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+    gap: 16,
+  },
+  heroCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: COLORS.navy,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  heroEmoji: { fontSize: 48 },
+  heroTitle: { fontSize: 28, fontWeight: '900', color: COLORS.text, textAlign: 'center' },
+  heroSub: { fontSize: 16, color: COLORS.textSecondary, textAlign: 'center', lineHeight: 23 },
+
+  idleControls: {
+    paddingHorizontal: 20,
+    gap: 0,
+  },
+  pickerLabel: { fontSize: 11, fontWeight: '700', color: COLORS.textSecondary, marginBottom: 10, letterSpacing: 0.5 },
+  chipRow: { flexDirection: 'row' },
   chip: {
     borderWidth: 1.5,
     borderColor: COLORS.border,
     borderRadius: 20,
-    paddingHorizontal: 14,
-    paddingVertical: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
     marginRight: 8,
     backgroundColor: COLORS.white,
   },
   chipActive: { borderColor: COLORS.primary, backgroundColor: COLORS.primaryLight },
-  chipText: { fontSize: 13, color: COLORS.text },
-  chipTextActive: { color: COLORS.primary, fontWeight: '600' },
-  offersSection: { gap: 12 },
-  sectionTitle: { fontSize: 15, fontWeight: '700', color: COLORS.text },
+  chipText: { fontSize: 14, color: COLORS.text },
+  chipTextActive: { color: COLORS.primary, fontWeight: '700' },
+
+  activateBtn: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 18,
+    paddingVertical: 20,
+    alignItems: 'center',
+    marginTop: 24,
+  },
+  activateBtnDisabled: { opacity: 0.6 },
+  activateBtnText: { color: COLORS.white, fontSize: 18, fontWeight: '900', letterSpacing: 1 },
+
+  /* ── Active ── */
+  activeContainer: { flex: 1 },
+  activeBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.primaryLight,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+    gap: 8,
+  },
+  activeDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: COLORS.primary },
+  activeLabel: { flex: 1, fontSize: 12, fontWeight: '700', color: COLORS.primary, letterSpacing: 0.5 },
+  stopBtn: { fontSize: 14, fontWeight: '700', color: COLORS.red },
+
+  offersScroll: { padding: 20, gap: 12, paddingBottom: 40 },
+  sectionTitle: { fontSize: 15, fontWeight: '700', color: COLORS.text, marginBottom: 4 },
   offerCard: {
     backgroundColor: COLORS.white,
     borderRadius: 14,
@@ -295,25 +352,18 @@ const styles = StyleSheet.create({
     borderColor: COLORS.border,
     overflow: 'hidden',
   },
-  offerCardInner: {
-    flexDirection: 'row',
-  },
+  offerCardInner: { flexDirection: 'row' },
   offerThumb: {
     width: 88,
     alignSelf: 'stretch',
-    borderTopLeftRadius: 14,
-    borderBottomLeftRadius: 14,
   },
-  offerCardBody: {
-    flex: 1,
-    padding: 14,
-    gap: 6,
-  },
+  offerCardBody: { flex: 1, padding: 14, gap: 6 },
   offerText: { fontSize: 15, fontWeight: '700', color: COLORS.text },
   offerMeta: { fontSize: 13, color: COLORS.textSecondary },
   progressBg: { height: 4, backgroundColor: COLORS.border, borderRadius: 2 },
   progressBar: { height: 4, backgroundColor: COLORS.primary, borderRadius: 2 },
   progressBarAmber: { backgroundColor: COLORS.red },
-  historyLink: { alignItems: 'center', paddingVertical: 8 },
+
+  historyLink: { alignItems: 'center', paddingVertical: 12 },
   historyLinkText: { color: COLORS.primary, fontSize: 14, fontWeight: '600' },
 })
